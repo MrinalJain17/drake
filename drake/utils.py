@@ -1,18 +1,33 @@
 import numpy as np
-import pandas as pd
+
+
+class Entity(object):
+    def __init__(self, name, correlation, mean, variance):
+        """TODO
+
+        """
+        self._name = name
+        self._mean = mean
+        self._variance = variance
+        self._correlation = correlation
+        self._snake = create_snake(self._correlation)
+        self._dragon = create_dragon(self._mean, self._variance, self._snake)
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def dragon(self):
+        return self._dragon
 
 
 def create_snake(arr: np.ndarray) -> np.ndarray:
     """TODO
 
     """
-    # Sanity check if a pandas dataframe is passed instead
-    if isinstance(arr, pd.DataFrame):
-        arr = arr.to_numpy()
-
-    # Takes as input only 2-d square arrays
-    assert arr.ndim == 2
-    assert arr.shape[0] == arr.shape[1]
+    # Sanity check for the array
+    assert is_2d_square_numpy_array(arr)
 
     dim = arr.shape[0]
     diagonals = []
@@ -24,3 +39,17 @@ def create_snake(arr: np.ndarray) -> np.ndarray:
         diagonals.append(temp)
 
     return np.concatenate(diagonals)
+
+
+def create_dragon(mean, variance, snake):
+    """TODO
+
+    """
+    return np.concatenate((mean, variance, snake))
+
+
+def is_2d_square_numpy_array(arr: np.ndarray) -> bool:
+    assert isinstance(arr, np.ndarray)
+    assert arr.ndim == 2
+    assert arr.shape[0] == arr.shape[1]
+    return True
