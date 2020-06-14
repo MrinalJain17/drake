@@ -1,9 +1,17 @@
 import numpy as np
 from sklearn.base import BaseEstimator, ClusterMixin, TransformerMixin
-from sklearn.cluster import AgglomerativeClustering, KMeans
+from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import calinski_harabasz_score
 from sklearn.utils import check_random_state
 from tqdm.auto import tqdm
+
+try:
+    # A much faster implementation of KMeans, backed by Intel
+    # GitHub: https://github.com/IntelPython/daal4py
+    # Conda installation: https://anaconda.org/intel/daal4py
+    from daal4py.sklearn.cluster import KMeans
+except ImportError:
+    from sklearn.cluster import KMeans
 
 
 class ConsensusClustering(TransformerMixin, ClusterMixin, BaseEstimator):
