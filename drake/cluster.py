@@ -1,4 +1,5 @@
 import numpy as np
+from joblib import Parallel, delayed, effective_n_jobs
 from sklearn.base import BaseEstimator, ClusterMixin
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import calinski_harabasz_score
@@ -18,7 +19,12 @@ except ImportError:
 
 class ConsensusClustering(ClusterMixin, BaseEstimator):
     def __init__(
-        self, n_clusters=8, iterations=1000, sample_size=0.8, random_state=None
+        self,
+        n_clusters=8,
+        iterations=1000,
+        sample_size=0.8,
+        n_jobs=None,
+        random_state=None,
     ):
         """TODO
 
@@ -27,6 +33,7 @@ class ConsensusClustering(ClusterMixin, BaseEstimator):
         self.iterations = iterations
         self.sample_size = sample_size
         self.random_state = random_state
+        self.n_jobs = n_jobs
         self.epsilon = 1e-8
 
     def fit(self, X, y=None, disable_progress=False):
@@ -34,6 +41,7 @@ class ConsensusClustering(ClusterMixin, BaseEstimator):
 
         """
         self.num_samples_, _ = X.shape
+        self.n_jobs = effective_n_jobs(self.n_jobs)
         self.consensus_matrix_ = self._fit(X, disable_progress)
         self.labels_ = self._fit_distance_matrix(self.consensus_matrix_)
 
@@ -57,17 +65,30 @@ class ConsensusClustering(ClusterMixin, BaseEstimator):
 
         """
         resampled_indices, resampling_co_occurence_matrix = self._resample()
-        clustering_co_occurence_matrix = np.zeros(
-            (self.num_samples_, self.num_samples_)
-        )
+        co_occurence_matrix_list = None
 
-        for index in tqdm(
-            resampled_indices,
-            desc=f"ConsensusClustering(n_clusters={self.n_clusters})",
-            disable=disable_progress,
-        ):
-            co_occurence_matrix_iteration_i = self._fit_subset(X, index)
-            clustering_co_occurence_matrix += co_occurence_matrix_iteration_i
+        if self.n_jobs == 1:
+            # With no multi-processing (hence n_jobs=1), using a simple list comprehension
+            # is slightly faster than using joblib's Parallel
+            co_occurence_matrix_list = [
+                self._fit_subset(X, index)
+                for index in tqdm(
+                    resampled_indices,
+                    desc=f"ConsensusClustering(n_clusters={self.n_clusters})",
+                    disable=disable_progress,
+                )
+            ]
+        else:
+            co_occurence_matrix_list = Parallel(n_jobs=self.n_jobs, verbose=0)(
+                delayed(self._fit_subset)(X, index=index)
+                for index in tqdm(
+                    resampled_indices,
+                    desc=f"ConsensusClustering(n_clusters={self.n_clusters})",
+                    disable=disable_progress,
+                )
+            )
+
+        clustering_co_occurence_matrix = np.sum(co_occurence_matrix_list, axis=0)
 
         return self._compute_consensus_matrix(
             clustering_co_occurence_matrix, resampling_co_occurence_matrix
