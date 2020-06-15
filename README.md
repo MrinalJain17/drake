@@ -22,7 +22,7 @@ Implementation of the paper [Clustering of the structures by using "snakes & dra
 
 ### Optional requirements
 
-The algorithm internally uses `KMeans` multiple times on random partitions of the entire dataset. Although sklearn's implementation of K-Means is widely used, it is not the fastest out there. [Intel-backed DAAL's](https://github.com/IntelPython/daal4py) implementation was found to be much faster in the initial benchmarks, giving almost 6-8x speed-up. If DAAL is **not** installed, then the code will fallback to use the sklearn's implementation.
+The algorithm internally uses `KMeans` multiple times on random partitions of the entire dataset. Although sklearn's implementation of K-Means is widely used, it is not the fastest out there. [Intel-backed DAAL's](https://github.com/IntelPython/daal4py) implementation was found to be much faster in the [initial benchmarks](https://github.com/MrinalJain17/drake/wiki/Benckmark-Scikit-learn-vs.-Intel's-DAAL-(for-K-Means)), giving almost 8-12x speed-up. If DAAL is **not** installed, then the code will fallback to use the sklearn's implementation.
 
 The recommended way to install [DAAL for python](https://github.com/IntelPython/daal4py) would be using the conda package manager:
 
