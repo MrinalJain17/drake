@@ -11,9 +11,18 @@ Implementation of the paper [Clustering of the structures by using "snakes & dra
 - NumPy
 - Pandas
 - Scikit-learn
-- Tqdm
+- Tqdm (for displaying a progress bar)
+- [Yellowbrick](https://github.com/DistrictDataLabs/yellowbrick) (provides mechanism for selecting the best number of clusters `k`, as described in the paper)
+  
+  To install using the conda package mamager (recommended):
 
-The algorithm internally uses `KMeans` multiple times on random partitions of the dataset. Although sklearn's implementation of KMeans is widely used, it is not the fastest out there. [Intel-backed DAAL's](https://github.com/IntelPython/daal4py) implementation was found to be much faster in the initial benchmarks, giving almost 6-8x speed-up. If DAAL is **not** installed, then the code will fall back to use sklearn's implementation of `KMeans`.
+  ```bash
+  conda install -c districtdatalabs yellowbrick
+  ```
+
+### Optional requirements
+
+The algorithm internally uses `KMeans` multiple times on random partitions of the entire dataset. Although sklearn's implementation of K-Means is widely used, it is not the fastest out there. [Intel-backed DAAL's](https://github.com/IntelPython/daal4py) implementation was found to be much faster in the initial benchmarks, giving almost 6-8x speed-up. If DAAL is **not** installed, then the code will fallback to use the sklearn's implementation.
 
 The recommended way to install [DAAL for python](https://github.com/IntelPython/daal4py) would be using the conda package manager:
 
@@ -23,4 +32,5 @@ conda install -c intel daal4py
 
 ## Refrences
 
-1. The code for the consensus clustering module was (initially) partially adapted from [this repository](https://github.com/ZigaSajovic/Consensus_Clustering). Later, much of it was reworked in [this commit](https://github.com/MrinalJain17/drake/commit/0a8e98a5886ac2df2265eb907111992ebc1de019).
+1. Consensus Clustering (paper): https://link.springer.com/article/10.1023/A:1023949509487
+2. Consensus Clustering (blog): https://towardsdatascience.com/consensus-clustering-f5d25c98eaf2

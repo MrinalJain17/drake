@@ -21,6 +21,10 @@ class Entity(object):
     def dragon(self):
         return self._dragon
 
+    @property
+    def correlation(self):
+        return self._correlation
+
 
 def create_snake(arr: np.ndarray) -> np.ndarray:
     """TODO

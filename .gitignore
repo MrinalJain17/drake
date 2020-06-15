@@ -205,3 +205,5 @@ $RECYCLE.BIN/
 
 # Custom
 data/*
+world_bank.npz
+clustered_countries.pkl

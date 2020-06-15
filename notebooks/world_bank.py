@@ -82,5 +82,5 @@ indices = {
     "Net trade in goods (BoP, current US$)": "net-trade-in-goods",
     "Labor force participation rate, total (% of total population ages 15+) (modeled ILO estimate)": "labor-force-participation",
     "Foreign direct investment, net (BoP, current US$)": "foreign-direct-investment",
-    "Gross domestic savings (current US$)": "gross-domestic-product",
+    "Gross domestic savings (current US$)": "gross-domestic-savings",
 }
