@@ -2,10 +2,39 @@ import numpy as np
 
 
 class Entity(object):
-    def __init__(self, name, correlation, mean, variance):
-        """TODO
+    """A utility to create (and store) the snake and dragon vectors
 
-        """
+    This class is intended to store the relevant information corresponding to a
+    single entity/object.
+
+    Parameters
+    ----------
+    name : str
+        The name of the entity/object
+
+    correlation : np.ndarray of shape (n_features, n_features)
+        The correlation matrix of the features
+
+    mean : np.ndarray of shape (n_features,)
+        The mean value of each feature
+
+    variance : np.ndarray of shape (n_features,)
+        The variance of each feature
+
+    Attributes
+    ----------
+    name : str
+        The name of the entity/object
+
+    correlation : np.ndarray of shape (n_features, n_features)
+        The correlation matrix of the features
+
+    dragon : np.ndarray
+        Concatenation of mean, variance and snake vector, as described in the paper.
+
+    """
+
+    def __init__(self, name, correlation, mean, variance):
         self._name = name
         self._mean = mean
         self._variance = variance
@@ -18,20 +47,31 @@ class Entity(object):
         return self._name
 
     @property
-    def dragon(self):
-        return self._dragon
-
-    @property
     def correlation(self):
         return self._correlation
 
+    @property
+    def dragon(self):
+        return self._dragon
+
 
 def create_snake(arr: np.ndarray) -> np.ndarray:
-    """TODO
+    """Creates the sanke vector as described in the paper from a 2-D square matrix
+
+    Parameters
+    ----------
+    arr : np.ndarray of shape (n_features, n_features)
+        A 2-D square matrix (according to the paper, it should be the correlation
+        matrix of an entity/object).
+
+    Returns
+    -------
+    snake_vector : np.ndarray
+        1-D snake vector created from the 2-D matrix.
 
     """
     # Sanity check for the array
-    assert is_2d_square_numpy_array(arr)
+    is_2d_square_numpy_array(arr)
 
     dim = arr.shape[0]
     diagonals = []
@@ -46,9 +86,7 @@ def create_snake(arr: np.ndarray) -> np.ndarray:
 
 
 def create_dragon(mean, variance, snake):
-    """TODO
-
-    """
+    """Concatenates the arrays required to create the dragon vector"""
     return np.concatenate((mean, variance, snake))
 
 
@@ -56,4 +94,3 @@ def is_2d_square_numpy_array(arr: np.ndarray) -> bool:
     assert isinstance(arr, np.ndarray)
     assert arr.ndim == 2
     assert arr.shape[0] == arr.shape[1]
-    return True
